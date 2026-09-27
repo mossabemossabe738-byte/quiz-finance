@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار الذكاء والوعي المالي</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b, #064e3b);
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --accent-yellow: #facc15;
+      --accent-yellow-hover: #eab308;
+      --text-white: #f8fafc;
+      --text-sub: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-white);
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    p.subtitle {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .tag {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--accent-yellow);
+      color: #000;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: var(--accent-yellow-hover);
+      transform: translateY(-2px);
+    }
+
+    .quiz-sec {
+      display: none;
+    }
+
+    .question-title {
+      font-size: 17px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-white);
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: right;
+      transition: 0.2s;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .option-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .score-text {
+      font-size: 28px;
+      color: var(--accent-yellow);
+      font-weight: bold;
+      margin: 16px 0;
+    }
+
+    .result-badge {
+      background: rgba(250, 204, 21, 0.15);
+      border: 1px solid var(--accent-yellow);
+      color: var(--accent-yellow);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- الشاشة الأولى: البداية -->
+    <div id="start-screen">
+      <div class="icon">💰</div>
+      <h1>اختبار الوعي والإدارة المالية</h1>
+      <p class="subtitle">اكتشف شخصيتك المالية وكيف تتعامل مع المال والاستثمار من خلال هذا الاختبار.</p>
+      
+      <div class="tags">
+        <span class="tag">💡 الميزانية</span>
+        <span class="tag">📈 الاستثمار</span>
+        <span class="tag">🛡️ الأمان المالي</span>
+        <span class="tag">⚖️ التوازن</span>
+      </div>
+
+      <button class="btn" onclick="startQuiz()">بدء الاختبار ←</button>
+      <p class="subtitle" style="margin-top: 15px; font-size: 12px;">6 أسئلة • نقاط من 1 إلى 4 لكل إجابة</p>
+    </div>
+
+    <!-- الشاشة الثانية: الأسئلة -->
+    <div id="quiz-screen" class="quiz-sec">
+      <div class="subtitle" id="progress">سؤال 1 من 6</div>
+      <h2 class="question-title" id="question-text">نص السؤال...</h2>
+      <div class="options" id="options-container"></div>
+    </div>
+
+    <!-- الشاشة الثالثة: النتيجة -->
+    <div id="result-screen" class="quiz-sec">
+      <div class="icon">📊</div>
+      <h1>نتيجة تحليل شخصيتك المالية</h1>
+      <div class="score-text" id="final-score">0 / 24</div>
+      <div class="result-badge" id="result-title">عنوان النتيجة</div>
+      <p class="subtitle" id="result-desc"></p>
+      <button class="btn" onclick="location.reload()">إعادة الاختبار 🔄</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "1) Vous recevez une somme d'argent inattendue (ex: prime, cadeau). Que faites-vous en premier ?",
+        options: [
+          { text: "A) Je la dépense immédiatement pour me faire plaisir (nouveau téléphone, voyage, vêtements).", points: 1 },
+          { text: "B) Je la garde sur mon compte courant pour payer mes factures.", points: 2 },
+          { text: "C) J’en garde une partie et je dépense le reste.", points: 3 },
+          { text: "D) Je la place ou je l'investis pour qu'elle génère des intérêts ou des revenus.", points: 4 }
+        ]
+      },
+      {
+        text: "2) Comment gérez-vous votre budget mensuel ?",
+        options: [
+          { text: "A) Je dépense sans vraiment savoir où va mon argent.", points: 1 },
+          { text: "B) Je paie mes besoins et je dépense ce qui reste.", points: 2 },
+          { text: "C) Je fais attention à mes dépenses, mais sans budget précis.", points: 3 },
+          { text: "D) J’ai un budget précis et je sais combien j’épargne chaque mois.", points: 4 }
+        ]
+      },
+      {
+        text: "3) Face à un achat important (ex: une voiture), quelle est votre approche ?",
+        options: [
+          { text: "A) Je prends un crédit pour l'avoir immédiatement. Il faut profiter de la vie !", points: 1 },
+          { text: "B) J'achète une voiture d'occasion simple, sans crédit si possible, pour ne pas m'endetter.", points: 2 },
+          { text: "C) Je compare plusieurs possibilités avant de décider.", points: 3 },
+          { text: "D) J’analyse d’abord si cette voiture représente un actif ou une dépense.", points: 4 }
+        ]
+      },
+      {
+        text: "4) Quelle est votre plus grande peur concernant l'argent ?",
+        options: [
+          { text: "A) Ne pas pouvoir acheter ce que je veux.", points: 1 },
+          { text: "B) Ne pas avoir assez d’argent à la fin du mois.", points: 2 },
+          { text: "C) Avoir des dettes importantes.", points: 3 },
+          { text: "D) Perdre du pouvoir d’achat et ne pas faire fructifier mon argent.", points: 4 }
+        ]
+      },
+      {
+        text: "5) Comment définiriez-vous la richesse ?",
+        options: [
+          { text: "A) Avoir beaucoup d'argent pour dépenser sans compter.", points: 1 },
+          { text: "B) Avoir un bon salaire et pouvoir subvenir à ses besoins.", points: 2 },
+          { text: "C) Avoir des actifs qui travaillent pour moi, me donnant la liberté de mon temps.", points: 3 },
+          { text: "D) Avoir beaucoup d’épargne et peu de dettes.", points: 4 }
+        ]
+      },
+      {
+        text: "6) Selon vous, quel est le meilleur moyen de devenir riche ?",
+        options: [
+          { text: "A) Gagner à la loterie ou hériter.", points: 1 },
+          { text: "B) Travailler et augmenter progressivement son salaire.", points: 2 },
+          { text: "C) Apprendre à gérer son argent, épargner et investir.", points: 3 },
+          { text: "D) Épargner régulièrement sans forcément investir.", points: 4 }
+        ]
+      }
+    ];
+
+    let currentQuestion = 0;
+    let totalScore = 0;
+
+    function startQuiz() {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('progress').innerText = `سؤال ${currentQuestion + 1} من ${questions.length}`;
+      document.getElementById('question-text').innerText = q.text;
+
+      const optionsDiv = document.getElementById('options-container');
+      optionsDiv.innerHTML = '';
+
+      q.options.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt.text;
+        btn.onclick = () => selectAnswer(opt.points);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(points) {
+      totalScore += points;
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('result-screen').style.display = 'block';
+      
+      document.getElementById('final-score').innerText = `${totalScore} / 24`;
+      
+      let title = "";
+      let desc = "";
+
+      if (totalScore >= 20) {
+        title = "🧠 Investisseur Avisé / غير مسرف وعقلاني جداً";
+        desc = "ممتاز! لديك وعي ذكي جداً بالمال وتعرف كيف تدير ميزانيتك وتستثمر أموالك لتنميتها وتأمين مستقبلك دون إسراف.";
+      } else if (totalScore >= 14) {
+        title = "⚖️ Gestionnaire Prudent / متوازن وحذر";
+        desc = "أنت شخص متوازن تحرص على عدم التبذير وتجنب الديون، ولكن يمكنك زيادة وعيك بالاستثمار لتطوير دخلك بشكل أكبر.";
+      } else if (totalScore >= 10) {
+        title = "⚠️ Consommateur Moyen / معتدل بحاجة لميزانية";
+        desc = "تكتفي بتغطية مصاريفك اليومية، لكن ليس لديك ميزانية دقيقة أو خطة ادخار واضحة. ينصح بضبط مصاريفك وتجنب الشراء العاطفي.";
+      } else {
+        title = "🚨 Panier Percé / مسرف وتستهلك بدون تخطيط";
+        desc = "تعتمد على الإنفاق الفوري والرغبات الاستهلاكية دون التفكير في الادخار أو المستقبليات. عليك البدء بتنظيم ميزانيتك فوراً لتجنب الأزمات المالية.";
+      }
+
+      document.getElementById('result-title').innerText = title;
+      document.getElementById('result-desc').innerText = desc;
+    }
+  </script>
+</body>
+</html>
